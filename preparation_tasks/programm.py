@@ -6,7 +6,7 @@ from datetime import timedelta
 from datetime import datetime
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
-df = pd.read_csv("tsticks.log"
+df = pd.read_csv("data/tsticks.log"
                  ,delimiter = ", "
                  , comment = "#"
                 ,names = ["module","HEX ID","timestamp","sensor1","sensor2","sensor3","sensor4","sensor5","sensor6","sensor7","sensor8"]
@@ -66,52 +66,52 @@ y2 = np.arange(8)
 X2, Y2 = np.meshgrid(x2, y2)
 
 fig, ax = plt.subplots(1,2,figsize=(2*7.2,4.4),constrained_layout = True)
-CS = ax[0].contourf(X/(60**2),Y,Z,10, cmap="coolwarm")
+CS = ax[0].contourf(X/(60**2),Y,Z,10, cmap = "coolwarm")
 
-ax[0].set_title('unit 50163d')
+ax[0].set_title('50163d Data')
 ax[0].set_xlabel('Time [h]')
 ax[0].set_ylabel('Sensor')
 labels = [item.get_text() for item in ax[0].get_yticklabels()]
-labels = ["S8"
-          ,"S7"
-          ,"S6"
-          ,"S5"
-          ,"S4"
-          ,"S3"
-          ,"S2"
-          ,"S1"]
+labels = ["Sensor 8"
+          ,"Sensor 7"
+          ,"Sensor 6"
+          ,"Sensor 5"
+          ,"Sensor 4"
+          ,"Sensor 3"
+          ,"Sensor 2"
+          ,"Sensor 1"]
 ax[0].set_yticklabels(labels)
 
 
 
 CS2 = ax[1].contourf(X2/(60**2),Y2,Z2,10, cmap="coolwarm")
 
-ax[1].set_title('unit 50163d')
+ax[1].set_title('50163d Data')
 ax[1].set_xlabel('Time [h]')
 ax[1].set_ylabel('Sensor')
 labels = [item.get_text() for item in ax[1].get_yticklabels()]
-labels = ["S8"
-          ,"S7"
-          ,"S6"
-          ,"S5"
-          ,"S4"
-          ,"S3"
-          ,"S2"
-          ,"S1"]
+labels = ["Sensor 8"
+          ,"Sensor 7"
+          ,"Sensor 6"
+          ,"Sensor 5"
+          ,"Sensor 4"
+          ,"Sensor 3"
+          ,"Sensor 2"
+          ,"Sensor 1"]
 ax[1].set_yticklabels(labels)
 
-           
 cbar=fig.colorbar(CS2)
 cbar.ax.set_ylabel('Temperature')
 
-plt.savefig("temperature_plot.pdf")
+plt.savefig("plot1.pdf")
 plt.close()
+
 
 #--------------------------
 
 #Teil b
 
-path = "preparation_tasks/data/tsensors_multiple_files/"
+path = "data/tsensors_multiple_files/"
 df = pd.DataFrame()
 for i in np.arange(1,8):
     new_df = pd.read_csv(path+"group0"+str(i)+".log"
@@ -152,7 +152,7 @@ y = np.arange(1,8)
 X, Y = np.meshgrid(x, y)
 
 fig, ax = plt.subplots(1,1,figsize=(2*7.2,4.4),constrained_layout = True)
-CS = ax.contourf(Z,10)
+CS = ax.contourf(Z,10, cmap="coolwarm")
 
 ax.set_title('Part b Data')
 ax.set_xlabel('Time')
@@ -167,7 +167,7 @@ labels = ["Sensor1"
           ,"Sensor7"]
 ax.set_yticklabels(labels);
 
-cbar = plt.colorbar(CS)
+cbar = fig.colorbar(CS)
 cbar.ax.set_ylabel('Temperature')
 
 plt.savefig("plot3.pdf")
