@@ -10,6 +10,7 @@
 #include <SPI.h>
 #include <RTClib.h>
 #include <OneWire.h>
+#include "temp_commands.h"
 
 RTC_DS1307 rtc;
 
@@ -33,5 +34,8 @@ void setup()
 
 void loop()
 {
+  //Start 1st Sequence
+  ow.reset();
+  ow.write(CONVERT_T);
   
 }
