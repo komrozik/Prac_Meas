@@ -83,15 +83,17 @@ void loop()
   float tempCelsius = tempRead/16.;
   // LED(int(tempCelsius));
   String time_now= getISOtime();
-  save_data_point(time_now,tempCelsius);
+  save_data_point(time_now,registration_number,tempCelsius);
   delay(1000);
 
 }
 
-void save_data_point(String time,float spot){//,float avg){
+void save_data_point(String time,String reg,float spot){//,float avg){
   printOutput(time);
   printOutput(", ");
   printOutput(String(millis()));
+  printOutput(", ");
+  printOutput(reg);
   printOutput(", ");
   printOutputln(String(spot));
   // printOutput(", ");
@@ -102,6 +104,8 @@ void save_header(){
   printOutput("# Date");
   printOutput(", ");
   printOutput("millis");
+  printOutput(", ");
+  printOutput("sensor_id");
   printOutput(", ");
   printOutputln("spot_meas");
   // printOutput(", ");
