@@ -1,0 +1,42 @@
+\section*{Goal}
+The aim of the experiment is to calibrate several temperature sensors with each other and to determine the time constant of the sensors.
+In addition, the measurements of the sensors are to be compared.
+In order to become familiar with the Arduino programming, a status LED is to be programmed that indicates the status of the measurement.
+\section{Theory}
+\label{sec:theory}
+
+\subsection{Electronics}
+Different types of consumers are used in the circuit for the experiment.
+In order to work with these consumers, the basic physics of electronics and circuits must be covered.
+
+First of all a Resistor is an electrotechnical component which influences the Voltage and the current.
+Every part of a circuit has some sort of internal resistance, even wires have internal resistance, but it is usually so small that it can be neglected.
+For a classical Resistor as an electric component the following equation holds.
+\begin{equation}
+    \label{ohm}
+    U = R \cdot I
+\end{equation}
+This Equation is called Ohm's law and connects the Resistance $R$ of an Resistor with the Current $I$ and the Voltage $U$.
+
+Apart from Ohm's law it is also important to know Kirchhoff's circuit laws to calculate basic variables of an cicruit.
+\begin{description}
+    \item[Kirchoff's current law] Also known as Kirchhoff's junction rule it defines that for every junction in a circuit the current flowing in the junction is equal to the current flowing out of the junction $\sum_{k = 1}^n I_k = 0$
+    \item[Kirchoff's voltage law] Also knowm as Kirchhoff's loop rule if defines that the \textit{directed} sum of voltages in a closed loop inside the circuit must equal 0. $\sum_{k = 1}^n U_k = 0$ 
+\end{description} 
+
+\subsection{Temperature Sensors}
+\subsection{Error Theory and Calibration}
+To use a sensor in scientific experiments its very important to validate and calibrate it beforehand.
+There are 2 sources of error in scientific data acquisition, Systematic error and Random error.
+Random error is apparent in every measurement and we can not influence it, the only way to reduce random error is to use statistical averages which is not always possible. In our case we can reduce the random error by using a average measurement which integrates and averages all data points between two spot measurements.
+For Example: If we make a measurement every second we can either measure the temperature at the the specific second which is called a spot measurement, but if our sensor has a data aquisition rate of for example \SI{10}{\hertz} we can also add up the ten measurements in one second and then divide them by 10 to get an average measurement for each second.
+The other type of error is a systematic error which systematically influences all measurements of one sensor or experiment.
+Some Errors in the material or in the electronics can influence the data aquisition by systematically measuring a temperature \SI{2}{\celsius} higher than the "real" temperature.
+Another type of systematic error is the difference in the internal clocks and therefore the difference in the timestamps.
+In our data aquisition we can influence the systematic error and therefore we minimize it as much as possible.
+To calibrate our sensors we use a known timestamp to set all timestamps of the different sensors.
+We also use a calibrated Thermometer to calibrate the temperature measurements of the different sensors.
+There are also different types of systematic errors.
+Either the error is a offset to the actual response which is constant for all measurements which is easy fixed by adding or subtracting a constant value to the data.
+Another type of error is the gain error which is dependent on the measurements and subtracts or adds a prcentage of the measured value, this error is fixed by deriving the percentage and removing/adding it to the data.
+Measurement can also experience a non linear error which is harder to remove, but if it is possible to derive the function of this error one can also add/subtract the error again.

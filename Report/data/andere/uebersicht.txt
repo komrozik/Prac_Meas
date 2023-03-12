@@ -1,0 +1,9 @@
+# Name, sensor_id
+Katja S, 819096f013c
+Kirsten Schulze, b84c96f013c
+Danai Filippou, 76f96f013c
+Dogus K, d39896f013c
+Konstantin Mrozik, 50c596f013c
+Loana Grom, 61ac96f013c
+Quentin R, 145496f013c
+Simon Schaefers, c71996f013c

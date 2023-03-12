@@ -1,0 +1,103 @@
+%\newpage
+\section{Execution}
+\label{sec:execution}
+\section{Components}
+\subsection{Arduino Uno}
+The Arduino
+\subsection{Electrical Components}
+\subsubsection{LED}
+LED is short for Light Emitting Diode and therefore LED's are a special kind of Diode which emits light if a current is applied.
+Diodes are electrical components whose conductivity depends on the applied pooling.
+Classical semiconducter diodes are based on the physical properties of a pn-junction as explained in \cite{elektronik-kompendium}.
+\subsubsection{Temperature Sensor DS18B20}
+The DS18B20 is a programmable thermometer that can be controlled via a single cable.
+Special advantages of the temperature sensor are that it requires only one cable for control besides the ground connection and due to the unique 64-bit serial codes of the sensors it is possible to control multiple sensors with a single cable.
+In the range of \SI{-10}{\celsius} to \SI{85}{\celsius}, the temperature sensor has an accuracy of $\pm 0.5$\si{\celsius} and can be used in a temperature range from \SI{-55}{\celsius} to \SI{125}{\celsius}.
+With the help of a prasitic power mode it is even possible to operate the temperature sensor with only 2 connections (GND and DQ) whereby the power supply is then also provided via the signal connection. In our case, however, we used 3 cables for operation.
+Because the temperature sensor is connected to a 3-state port for its input signal, a pull-up resistor is used on the control line.
+
+\subsection{Experiment}
+The different Thermometers from the Arduino Circuits are connected to a handheld lab thermometer in a way that all thermometer tips align.
+For the expirement a watertank with a heating/cooling plate and a pump to mix up the watercolumn is brought to a temperature of \SI{3}{\celsius} while the surronding air temperature is at \SI{25}{\celsius}.
+To calibrate the sensors, all connected sensors are immersed in the water bath at the same time.
+After a short time the temperature of the water bath is changed and increased to \SI{20}{\celsius}.
+Each difference of \SI{1}{\kelvin} is noted with the corresponding timestamp.
+
+\subsection{Arduino Coding}
+Void Setup:
+% \begin{lstlisting}[language=C++]
+% void setup()
+% {
+%   Serial.begin(9600);
+
+%   if(!rtc.begin()){
+%     Serial.println("RTC is NOT running. Let's set the time now!");
+%     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+%   }
+%   /******
+%    * When the time needs to be set on a new device,
+%    * or after a power loss,
+%    * the following line sets the RTC to the date & time
+%    * this sketch was compiled(!)
+%   */
+%   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+%   if(!SD.begin(10)){
+%     Serial.println(
+%         "SD module initialization failed
+%         or SD Card is not present!"
+%         );
+%     return;
+%   }
+
+%   pinMode(5, OUTPUT);
+%   pinMode(6, OUTPUT);
+  
+%   save_header();
+% }
+% \end{lstlisting}
+Loop:
+% \begin{lstlisting}[language=C++]
+% void loop()
+% {
+%   byte rom_code[8]; // create array with 8 bytes (64 bits)
+%   byte sp_data[9]; // Scratchpad data
+
+%   //Start sequence to read out the rom code
+%   ow.reset();
+%   ow.write(READ_ROM);
+%   for (int i = 0; i<8; i++) {
+% rom_code[i] = ow.read();
+%   }
+%   if(rom_code[0] != IS_DS18B20_SENSOR){
+%     Serial.print("Sensor is not a DS18B20 sensor!");
+%     return;
+%   }
+%   String registration_number;
+%   for (int i = 1; i<7;i++){
+%     registration_number += String(rom_code[i], HEX);
+%   }
+  
+%   // Start Sequence for converting temperatures
+
+%   ow.reset();
+%   ow.write(SKIP_ROM);
+%   ow.write(CONVERT_T);
+
+%   // Start sequence for reading data from scratchpad
+%   ow.reset();
+%   ow.write(SKIP_ROM);
+%   ow.write(READ_SCRATCH);
+%   for (int i = 0; i<9;i++){
+%     sp_data[i] = ow.read();
+%   }
+
+%   int16_t tempRead = sp_data[1] << 8 | sp_data[0];
+  
+%   float tempCelsius = tempRead/16.;
+%   // LED(int(tempCelsius));
+%   String time_now= getISOtime();
+%   save_data_point(time_now,registration_number,tempCelsius);
+%   delay(1000);
+
+% }
+% \end{lstlisting}
