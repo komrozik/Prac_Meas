@@ -14,7 +14,8 @@
 
 // User-defined constant
 const String logfile = "tsensor.log";
-
+int cnt = 0;
+float avg = 0;
 
 RTC_DS1307 rtc;
 OneWire ow(4);
@@ -83,21 +84,27 @@ void loop()
   float tempCelsius = tempRead/16.;
   // LED(int(tempCelsius));
   String time_now= getISOtime();
-  save_data_point(time_now,registration_number,tempCelsius);
+  if (cnt < 9){
+    avg = avg+tempCelsius;
+  }
+  else{
+    save_data_point(time_now,registration_number,tempCelsius,avg/10);
+    cnt = 0;
+  }
   delay(1000);
 
 }
 
-void save_data_point(String time,String reg,float spot){//,float avg){
+void save_data_point(String time,String reg,float spot,float avg){
   printOutput(time);
   printOutput(", ");
   printOutput(String(millis()));
   printOutput(", ");
   printOutput(reg);
   printOutput(", ");
-  printOutputln(String(spot));
-  // printOutput(", ");
-  // printOutputln(avg);
+  printOutput(String(spot));
+  printOutput(", ");
+  printOutputln(avg);
 }
 
 void save_header(){
@@ -108,8 +115,8 @@ void save_header(){
   printOutput("sensor_id");
   printOutput(", ");
   printOutputln("spot_meas");
-  // printOutput(", ");
-  // printOutputln("avg_meas");
+  printOutput(", ");
+  printOutputln("avg_meas");
 }
 
 void LED(int signal){

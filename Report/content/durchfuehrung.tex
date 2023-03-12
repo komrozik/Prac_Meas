@@ -3,13 +3,13 @@
 \label{sec:execution}
 \section{Components}
 \subsection{Arduino Uno}
-The Arduino
-\subsection{Electrical Components}
-\subsubsection{LED}
+The Arduino Uno is a microcontroller board which can be progrmmed with C++ Code to do send and recive different electronic signals.
+The arduino board has different analog and digital inputs and outputs which can be connected to electrical cicuits to work with components like sensors, LEDs or diferent logical components.
+\subsection{LED}
 LED is short for Light Emitting Diode and therefore LED's are a special kind of Diode which emits light if a current is applied.
 Diodes are electrical components whose conductivity depends on the applied pooling.
 Classical semiconducter diodes are based on the physical properties of a pn-junction as explained in \cite{elektronik-kompendium}.
-\subsubsection{Temperature Sensor DS18B20}
+\subsection{Temperature Sensor DS18B20}
 The DS18B20 is a programmable thermometer that can be controlled via a single cable.
 Special advantages of the temperature sensor are that it requires only one cable for control besides the ground connection and due to the unique 64-bit serial codes of the sensors it is possible to control multiple sensors with a single cable.
 In the range of \SI{-10}{\celsius} to \SI{85}{\celsius}, the temperature sensor has an accuracy of $\pm 0.5$\si{\celsius} and can be used in a temperature range from \SI{-55}{\celsius} to \SI{125}{\celsius}.
@@ -23,81 +23,83 @@ To calibrate the sensors, all connected sensors are immersed in the water bath a
 After a short time the temperature of the water bath is changed and increased to \SI{20}{\celsius}.
 Each difference of \SI{1}{\kelvin} is noted with the corresponding timestamp.
 
+\subsection{Arduino Wiring}
+The arduino wiring is shown in Figures \ref{fig:wiring1} and \ref{fig:wiring2}.
+\begin{figure}
+    \centering 
+    \includegraphics[width = 0.8\textwidth]{bilder/wiring_1.png}
+    \label{fig:wiring1}
+\end{figure}
+\begin{figure}
+    \centering 
+    \includegraphics[width = 0.8\textwidth]{bilder/wiring_2.png}
+    \label{fig:wiring2}
+\end{figure}
 \subsection{Arduino Coding}
-Void Setup:
-% \begin{lstlisting}[language=C++]
-% void setup()
-% {
-%   Serial.begin(9600);
+To setup the arduino first of all the void function setup() is programmed.
+In the setup the Serial output is initialized with a baud rate of 9600.
+If the RealTimeClock (rtc) is not running a error message is printed and the rtc will be started.
+For the first time running the code the internal clock is initialized with the local Computer time.
+Next up the SD card is checked and of its not found an error message is prompted.
+The different digital pins are put to the output mode to deliver information to the temperature sensor.
+At last the header for the data is saved in the SD card LOG file.
 
-%   if(!rtc.begin()){
-%     Serial.println("RTC is NOT running. Let's set the time now!");
-%     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-%   }
-%   /******
-%    * When the time needs to be set on a new device,
-%    * or after a power loss,
-%    * the following line sets the RTC to the date & time
-%    * this sketch was compiled(!)
-%   */
-%   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-%   if(!SD.begin(10)){
-%     Serial.println(
-%         "SD module initialization failed
-%         or SD Card is not present!"
-%         );
-%     return;
-%   }
+For the measurements a routine is defined in the function loop() for the arduino.
 
-%   pinMode(5, OUTPUT);
-%   pinMode(6, OUTPUT);
-  
-%   save_header();
-% }
-% \end{lstlisting}
-Loop:
-% \begin{lstlisting}[language=C++]
-% void loop()
-% {
-%   byte rom_code[8]; // create array with 8 bytes (64 bits)
-%   byte sp_data[9]; // Scratchpad data
+First two arrays are initialized for the scratchpad data and the rom code.
+Then the OneWire bus is reset and the Rrom code is read to save the registration number or ID of the sensor.
+Afterwards the OneWire test is reset again to save the temperature reading.
+The temperature data is converted from binary to decimal and then all readings are saved on the SD card.
+At the end a delay of 1000 milliseconds assures that the data is read every second.
+\subsection{Adjusting for Average meas}
+Before the void setup():
+\begin{lstlisting}
+int cnt = 0;
+float avg = 0;
+\end{lstlisting}
+In the void loop():
+\begin{lstlisting}
+if (cnt < 9){
+    avg = avg+tempCelsius;
+  }
+else{
+    save_data_point(time_now,registration_number,tempCelsius,avg/10);
+    cnt = 0;
+  }
+delay(1000);
+\end{lstlisting}
+In the save\_data\_point function:
 
-%   //Start sequence to read out the rom code
-%   ow.reset();
-%   ow.write(READ_ROM);
-%   for (int i = 0; i<8; i++) {
-% rom_code[i] = ow.read();
-%   }
-%   if(rom_code[0] != IS_DS18B20_SENSOR){
-%     Serial.print("Sensor is not a DS18B20 sensor!");
-%     return;
-%   }
-%   String registration_number;
-%   for (int i = 1; i<7;i++){
-%     registration_number += String(rom_code[i], HEX);
-%   }
-  
-%   // Start Sequence for converting temperatures
+\begin{lstlisting}
+void save_data_point(String time,String reg,float spot,float avg){
+  printOutput(time);
+  printOutput(", ");
+  printOutput(String(millis()));
+  printOutput(", ");
+  printOutput(reg);
+  printOutput(", ");
+  printOutput(String(spot));
+  printOutput(", ");
+  printOutputln(avg);
+}
+\end{lstlisting}
 
-%   ow.reset();
-%   ow.write(SKIP_ROM);
-%   ow.write(CONVERT_T);
-
-%   // Start sequence for reading data from scratchpad
-%   ow.reset();
-%   ow.write(SKIP_ROM);
-%   ow.write(READ_SCRATCH);
-%   for (int i = 0; i<9;i++){
-%     sp_data[i] = ow.read();
-%   }
-
-%   int16_t tempRead = sp_data[1] << 8 | sp_data[0];
-  
-%   float tempCelsius = tempRead/16.;
-%   // LED(int(tempCelsius));
-%   String time_now= getISOtime();
-%   save_data_point(time_now,registration_number,tempCelsius);
-%   delay(1000);
-
-% }
-% \end{lstlisting}
+\subsection{Status LED}
+LED with different shades of blue,red and purple depending on the temperature.
+\begin{lstlisting}
+void LED(int signal){
+    if (signal < -55){
+        digitalWrite(5,255);
+        digitalWrite(6,0);
+      }
+      else if(signal > 125){
+      digitalWrite(6,255);
+        digitalWrite(5,0);
+      }
+      else if (signal > -55 && signal < 125){
+        int brightness = ((signal + 55. )/180.)*255;
+        analogWrite(5,255 - brightness);
+        analogWrite(6,brightness);
+      }
+}
+\end{lstlisting}
